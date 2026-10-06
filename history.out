@@ -1,0 +1,50 @@
+    1  cat /etc/os-release | head -3
+    2  id
+    3  sudo -v
+    4  sudo groupadd students
+    5  sudo useradd -m -u 1234 -G students user1
+    6  sudo passwd user1
+    7  sudo chage -M 90 user1
+    8  id user1
+    9  getent group students
+   10  sudo chage -l user1
+   11  sudo usermod -s /bin/bash user1
+   12  sudo find / -type f -perm -4000 2>/dev/null | tee ~/suid-files.out
+   13  ps -eo pid,ruid,euid,ruser,euser,comm | awk 'NR==1 || ($3==0 && $2>=1000)'
+   14  ps -eo pid,ruid,euid,ruser,euser,comm | awk 'NR==1 || ($3==0 && $2>=1000)' | tee ~/ps-monitor.out
+   15  sudo cp /usr/bin/cat /home/user1/cat-suid
+   16  sudo chown root:root /home/user1/cat-suid
+   17  sudo chmod u+s /home/user1/cat-suid
+   18  sudo ls -l /home/user1/cat-suid
+   19  sudo -u user1 cat /etc/shadow | head -2
+   20  sudo -u user1 /home/user1/cat-suid /etc/shadow | head -2
+   21  sudo -u user1 cat /etc/passwd | head -2
+   22  sudo cp /usr/bin/chown /home/user1/chown-cap
+   23  sudo setcap cap_chown+ep /home/user1/chown-cap
+   24  sudo getcap /home/user1/chown-cap
+   25  sudo -u user1 touch /home/user1/testfile
+   26  sudo -u user1 chown yura /home/user1/testfile
+   27  sudo -u user1 /home/user1/chown-cap yura /home/user1/testfile
+   28  sudo ls -l /home/user1/testfile
+   29  echo 'user1 ALL=(root) /usr/bin/date -s *' | sudo tee /etc/sudoers.d/user1
+   30  sudo chmod 440 /etc/sudoers.d/user1
+   31  sudo visudo -cf /etc/sudoers.d/user1
+   32  sudo -l -U user1
+   33  sudo -u user1 date -s '+1 min'
+   34  sudo -u user1 sudo date -s '+1 min'
+   35  date
+   36  sudo -u user1 sudo cat /etc/shadow
+   37  echo 375189
+   38  stat /home/user1 > ~/stat.out
+   39  sudo stat /home/user1/cat-suid >> ~/stat.out
+   40  sudo stat /home/user1/chown-cap >> ~/stat.out
+   41  sudo getcap /home/user1/chown-cap > ~/getcap.out
+   42  mkdir -p ~/mephi-linux-security-2026/etc
+   43  rm -R mephi-linux-security-2026/etc
+   44  cd mephi-linux-security-2026/
+   45  cp /etc/passwd /etc/group ./
+   46  ls -la
+   47  sudo cat /etc/shadow > ./shadow
+   48  cp ~/stat.out ~/getcap.out ~/suid-files.out ~/ps-monitor.out .
+   49  ls -la
+   50  history > ~/history.out
